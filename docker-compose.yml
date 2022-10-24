@@ -1,0 +1,22 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      #dockerfile: Dockerfile
+    container_name: smallmake_biblysm_www
+    #restart: always
+    volumes:
+      - .:/biblysm_www
+    # ports:
+    #   - 8081:8080
+    networks:
+      - wwwproxy_network
+      - dataservice_network
+
+networks:
+  wwwproxy_network:
+    external: true
+  dataservice_network:
+    external: true

@@ -9,11 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "bootstrap": "^5.2.2",
+    "date-fns": "^2.29.3",
+    "firebase": "^9.11.0",
+    "firebaseui": "^0.600.0",
+    "lodash": "^4.17.21",
     "next": "12.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-bootstrap": "^2.5.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.37.0",
+    "react-icons": "^4.4.0",
+    "react-spinners": "^0.13.6",
+    "recoil": "^0.7.6",
+    "recoil-persist": "^4.2.0",
+    "sass": "^1.55.0"
   },
   "devDependencies": {
+    "@types/react": "18.0.21",
     "eslint": "8.24.0",
     "eslint-config-next": "12.3.1"
   }
