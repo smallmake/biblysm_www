@@ -39,7 +39,7 @@ function BibliosList(props) {
         <td className="align-middle">
           <div className="mx-2">{ biblio.readlog_last_at ? <ReadlogLastAt biblio={biblio} /> : <></> }</div>
         </td>
-        <td nowrap='nowrap' className="text-end">
+        <td className="text-end" style={{whiteSpace: "nowrap"}}>
             <div className="my-1">{ biblio.purchased_at }</div>
             <div className="my-1"><Button variant="outline-dark" className="btn-sm" onClick={(e) => props.onEditBiblio(e)} data-biblio-id={biblio.id}>編集</Button></div>
         </td>
