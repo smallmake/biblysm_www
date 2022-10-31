@@ -13,7 +13,7 @@ import { isEmpty } from '../lib/utility'
 
 export default function Biblios(props) {
   const {biblios, pagination, readingBiblioIds, isFinished, categories, formats, filterParams, setFilter, reloadPage, toggleReadlogBiblio, scrapeAmazonUrl} = useBiblios(props.bibliotecaID)
-  const [paginationTabs, setPaginationTabs] = useState([])
+  const [paginationTabs, setPaginationTabs] = useState(null)
   const [editBiblioID, setEditBiblioID] = useState(null)
   const [editBiblioObj, setEditBiblioObj] = useState(null)
   const [showScrapingModal, setShowScrapingModal] = useState(false)
