@@ -22,13 +22,13 @@ export default function Header() {
   const topButton = () => {
     if (!isAuthFinished) return <span></span>
     if (router.pathname !== "/" && router.pathname !== '/settings') {
-      return <li><a href="/" className="nav-link px-2"><BsArrowReturnLeft size={22} className="me-1" />戻る</a></li>
+      return <li><Link  href="/" className="nav-link px-2"><a><BsArrowReturnLeft size={22} className="me-1" />戻る</a></Link></li>
     }
   }
   const loginButton = () => {
     if (!isAuthFinished) return <span></span>
     if (router.pathname !== "/login" && !currentUser) {
-      return <li><a href="/login" className="nav-link px-2"><BsBoxArrowInRight size={28} className="me-1 pb-1" />ログイン</a></li>
+      return <li><Link href="/login" className="nav-link px-2"><a><BsBoxArrowInRight size={28} className="me-1 pb-1" />ログイン</a></Link></li>
     }
   }
   
@@ -62,7 +62,7 @@ export default function Header() {
       <header className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between">
         
         <h1 className="d-flex align-items-center col-md-3 mb-2 mb-md-0 fs-5">
-          <Link href={ "/" } className="text-decoration-none"><a>
+          <Link href="/" className="text-decoration-none"><a>
             <Image src='images/biblysm-logo.svg' width={140} />
           </a></Link>
         </h1>
