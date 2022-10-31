@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }) {
     <AuthProvider>
       <RecoilRoot>
         <Component {...pageProps} />
-        <Script dangerouslySetInnerHTML={ setDarkMode(false) } />
+        <Script id="darkmode-script" dangerouslySetInnerHTML={ setDarkMode(false) } />
       </RecoilRoot>
     </AuthProvider>
   );
