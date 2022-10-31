@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
 import { useReadlogs } from '../lib/useReadlogs'
-import { useBibliotecaFormats } from '../lib/useBibliotecaFormats'
 import Loading from './Loading'
 import { Row, Col, Table, Button, Form, Badge, Modal, DropdownButton, Dropdown } from 'react-bootstrap'
 import Readlog from './Readlog'
