@@ -227,7 +227,7 @@ export default function Biblio(props) {
         <Row className="mb-1">
           <Col md={12}>
             <Form.Label htmlFor="note" className="visually-hidden">ノート</Form.Label>
-            <Form.Control tas="textarea" placeholder="ノート" style={{ height: '100px' }} {...register("note")} defaultValue={biblio.note}/>
+            <Form.Control type="textarea" placeholder="ノート" style={{ height: '100px' }} {...register("note")} defaultValue={biblio.note}/>
           </Col>
         </Row>
 
