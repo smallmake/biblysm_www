@@ -5,7 +5,7 @@ import { ja } from "date-fns/locale"
 
 function ReadlogsList(props) {
   return(
-    !props.readlogs ? <td colspan="3">なし</td> :
+    !props.readlogs ? <Row><Col md="auto">なし</Col></Row> :
     props.readlogs.map( (readlog) => (
       <Row key={readlog.id} className="my-1 border-bottom">
         <Col md={7} sm={6} className="float-start">
