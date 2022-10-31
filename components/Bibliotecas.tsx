@@ -12,7 +12,7 @@ export default function Bibliotecas(props) {
   const [ bibliotecaID, setBibliotecaID ] = useState(null)
   const [ listMode, setListMode ] = useState('biblioList')
 
-  useEffect(() => { // 画面切り替えのために使用
+  useEffect(() => { // ２つの値の一瞬の差分を画面切り替えのために使用
     setBibliotecaID(currentBibliotecaID)
   },[currentBibliotecaID])
   

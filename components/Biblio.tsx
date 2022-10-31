@@ -1,44 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useBiblio } from '../lib/useBiblio'
+import { useBiblio, BiblioForm } from '../lib/useBiblio'
 import Loading from './Loading'
 import { Row, Col, Image, Button, Form, Modal } from 'react-bootstrap'
 import { useForm } from "react-hook-form";
-//import {format} from 'date-fns'
 
-interface BiblioForm {
-  uuid: string
-  format: string
-  asin: string
-  isbn: string
-  category: string
-  priority: number
-  genre: string
-  place: string
-  language: string
-  title: string
-  subtitle: string
-  author: string
-  publisher: string
-  description: string
-  pages: number
-  aspect: string
-  published_at: Date
-  price: string
-  currentvalue: string
-  label: string
-  used: number
-  purchased_at: Date
-  read_count: number
-  memo: string
-  note: string
-  cover: File
-}
-
-
-
-// props: biblioID, categories, setEditBiblioID(nullにするとModalがとじられる)
+// props: biblioID, categories, setNullToEditBiblio(nullにするとModalがとじられる)
 export default function Biblio(props) {
-  const { biblio, isFinished, updateBiblio, deleteBiblio, postCover } = useBiblio(props.biblioID)
+  const { biblio, isFinished, updateBiblio, deleteBiblio, postCover } = useBiblio(props.biblioID, props.biblioObj)
   const { register, handleSubmit, watch, formState: { errors } } = useForm<BiblioForm>();
   const [coverImage, setCoverImage] = useState(null)
 
@@ -68,13 +36,13 @@ export default function Biblio(props) {
 
   const onSubmit = async (data) => {
     await updateBiblio(data)
-    props.reloadPage()
-    props.setEditBiblioID(null)
+    //props.reloadPage()
+    props.setNullToEditBiblio(true)
   }
 
   const closeForm = () => {
     props.reloadPage()
-    props.setEditBiblioID(null)
+    props.setNullToEditBiblio(false)
   }
 
   const setCoverImageFile = (e) => {
@@ -97,8 +65,7 @@ export default function Biblio(props) {
   const onDeleteBiblio = async() => {
     if( confirm("削除します。")) {
       deleteBiblio()
-      props.reloadPage()
-      props.setEditBiblioID(null)
+      props.setNullToEditBiblio(true)
     }
   }
 
@@ -106,6 +73,7 @@ export default function Biblio(props) {
     !biblio || !isFinished ? <Loading /> :
     <>
       <Form onSubmit={handleSubmit(onSubmit)} className="row g-1" >
+        <Form.Control type="hidden" name="biblioteca_id" defaultValue={ biblio.biblioteca_id }  {...register("biblioteca_id")} />
         <Row className="mb-1">
           <Col md={3}>
             <Row className="mb-1">
@@ -120,7 +88,7 @@ export default function Biblio(props) {
             <Row className="mb-1">
               <Col>
                 <div className="float-start">
-                  <Button variant="outline-dark" onClick={() => onDeleteBiblio()} >削除</Button>
+                  { biblio.id ? <Button variant="outline-dark" onClick={() => onDeleteBiblio()} >削除</Button> : <></> } {/* biblio.idがない時は新規 */}
                 </div>
                 <div className="float-end">
                   <Button type="submit" variant="warning" className="me-3">保存</Button>
@@ -225,8 +193,8 @@ export default function Biblio(props) {
 
         <Row className="mb-1">
           <Col md={12}>
-            <Form.Label htmlFor="discription" className="visually-hidden">概要</Form.Label>
-            <Form.Control as="textarea" placeholder="概要" style={{ height: '100px' }} {...register("discription")} defaultValue={biblio.discription}/>
+            <Form.Label htmlFor="description" className="visually-hidden">概要</Form.Label>
+            <Form.Control as="textarea" placeholder="概要" style={{ height: '100px' }} {...register("description")} defaultValue={biblio.description}/>
           </Col>
         </Row>
 
@@ -262,6 +230,9 @@ export default function Biblio(props) {
             <Form.Control tas="textarea" placeholder="ノート" style={{ height: '100px' }} {...register("note")} defaultValue={biblio.note}/>
           </Col>
         </Row>
+
+        <Form.Control type="hidden" {...register("misc")} defaultValue={biblio.misc}/>
+
       </Form>
     </>
   )

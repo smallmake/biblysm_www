@@ -1,11 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
 import { useBiblios, BibliosFilterParams } from '../lib/useBiblios'
+import { BiblioForm } from '../lib/useBiblio'
 import Loading from './Loading'
 import { Row, Col, Table, Button, Form, Badge, Modal, DropdownButton, Dropdown } from 'react-bootstrap'
 import Biblio from '../components/Biblio'
 import PaginationBar from '../components/PaginationBar'
 import BibliosList from './BibliosList'
-import SearchNdl from './SearchNdl'
+import SearchService from './SearchSeavice'
+import { SearchServiceTypes } from '../lib/useSearchService' // オブジェクトなので注意 {'search_ndl': "国会図書館検索", 'search_rakuten': "Rakuten検索"}
 import { isEmpty } from '../lib/utility'
 
 
@@ -14,9 +16,8 @@ export default function Biblios(props) {
   const [paginationTabs, setPaginationTabs] = useState([])
   const [editBiblioID, setEditBiblioID] = useState(null)
   const [editBiblioObj, setEditBiblioObj] = useState(null)
-  const [searchNdlWord, setSearchNdlWord] = useState(null)
   const [showScrapingModal, setShowScrapingModal] = useState(false)
-  const [showSerachNdlModal, setShowSearchNdlModal] = useState(false)
+  const [searchServiceName, setSearchServiceName] = useState(null) // SerachServiceModal の表示スイッチを兼用
   const [biblioFilterParams, setBiblioFilterParams] = useState<BibliosFilterParams>({page: 1, condition: "", category: "", word: ""})
 
   const refScrapeAmazonUrl = useRef(null)
@@ -89,11 +90,17 @@ export default function Biblios(props) {
     onBibliosSearchWord()
   }
 
+  const onKeyDownSearchWord = (e) => {
+    if (e.key === 'Enter') {
+      onBibliosSearchWord()
+    }
+  }
+
   const SearchWordField = () => (
     !biblioFilterParams ? <Loading /> :
     <Row>
       <Col md="auto">
-        <Form.Control ref={ refSearchWordField } placeholder="検索" defaultValue={ biblioFilterParams ? biblioFilterParams.word : "" } />
+        <Form.Control ref={ refSearchWordField } placeholder="検索" defaultValue={ biblioFilterParams ? biblioFilterParams.word : "" } onKeyDown={ onKeyDownSearchWord} />
       </Col>
       <Col md="auto" className="pt-1">
         <Button size="sm" variant="outline-dark" onClick={ onBibliosSearchWord } className="me-1">検索</Button>
@@ -103,18 +110,23 @@ export default function Biblios(props) {
   )
 
   const selectAddNew = (e) => {
-    if (e == 'scraping') {
+    if (e == 'new') {
+      const biblio = {} as BiblioForm
+      biblio.biblioteca_id = props.bibliotecaID
+      setEditBiblioObj(biblio)
+    } else if (e == 'scraping_amazon') {
       setShowScrapingModal(true)
-    } else if (e == 'ndl') {
-      setShowSearchNdlModal(true)
+    } else if (SearchServiceTypes.hasOwnProperty(e)) {
+      setSearchServiceName(e)
     }
   }
 
   const AddNewDropdown = () => (
     <DropdownButton variant="warning" title="Add New" onSelect={ (e) => selectAddNew(e) }>
-      <Dropdown.Item eventKey="scraping">Scraping</Dropdown.Item>
-      <Dropdown.Item eventKey="ndl">NDL</Dropdown.Item>
-      <Dropdown.Item eventKey="rakuten">Rakuten</Dropdown.Item>
+      <Dropdown.Item eventKey="new">新規</Dropdown.Item>
+      <Dropdown.Item eventKey="search_ndl">国会図書館検索</Dropdown.Item>
+      <Dropdown.Item eventKey="search_rakuten">Rakuten検索</Dropdown.Item>
+      <Dropdown.Item eventKey="scraping_amazon">Amazonスクレイプ</Dropdown.Item>
     </DropdownButton>
   )
 
@@ -145,6 +157,14 @@ export default function Biblios(props) {
     toggleReadlogBiblio(biblioID)
   }
 
+  const setNullToEditBiblio = (onChange: boolean) => {
+    if (onChange) {
+      reloadPage()
+    }
+    setEditBiblioID(null)
+    setEditBiblioObj(null)
+  }
+
   const EditBiblioModal = () => (
     !editBiblioID  && !editBiblioObj ? <div></div> :
     <Modal
@@ -152,7 +172,7 @@ export default function Biblios(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered 
       show={editBiblioID ||  editBiblioObj}
-      onHide={() => setEditBiblioID(null)}
+      onHide={() => setNullToEditBiblio(false)}
     >
       <Modal.Header closeButton>
         <Modal.Title>図書情報</Modal.Title>
@@ -160,15 +180,18 @@ export default function Biblios(props) {
       <Modal.Body>
         <Biblio 
           biblioID={editBiblioID} 
+          biblioObj={editBiblioObj}
           categories={categories} 
           formats={formats}
-          setEditBiblioID={setEditBiblioID}
+          setNullToEditBiblio={(onChange) => setNullToEditBiblio(onChange)}
           reloadPage={reloadPage}
         />
       </Modal.Body>
     </Modal>
   )
 
+
+  // スクレイプ ----------------------------------------------
   const onScrapeAmazon = async(e) => {
     e.preventDefault()
     setShowScrapingModal(false)
@@ -200,20 +223,25 @@ export default function Biblios(props) {
     </Modal>
   )
 
+  // サービス検索 -----------------------------------------
+  const pickBiblioFromSearchService = (biblioObj) => {
+    setSearchServiceName(null)
+    setEditBiblioObj(biblioObj)
+  }
 
-  const SearchNdlModal = () => (
+  const SearchServiceModal = () => (
     <Modal
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered 
-      show={showSerachNdlModal}
-      onHide={() => setShowSearchNdlModal(false)}
+      show={searchServiceName !== null}
+      onHide={() => setSearchServiceName(null)}
     >
       <Modal.Header closeButton>
-        <Modal.Title><h5>国会図書館検索</h5></Modal.Title>
+        <Modal.Title><h5>{ SearchServiceTypes[searchServiceName] }</h5></Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <SearchNdl bibliotecaID={props.bibliotecaID} />
+        <SearchService bibliotecaID={props.bibliotecaID} searchServiceName={ searchServiceName } pickBiblioFromSearchService={pickBiblioFromSearchService} />
       </Modal.Body>
     </Modal>
   )
@@ -225,8 +253,8 @@ export default function Biblios(props) {
         <thead>
           <tr>
             <th></th>
-            <th style={{width: '99%'}}>タイトル/形式/メモ</th>
-            <th style={{whiteSpace: 'nowrap'}}>前回読書</th>
+            <th style={{width: '90%'}}>タイトル/形式/メモ</th>
+            <th style={{whiteSpace: 'nowrap'}}>前回</th>
             <th>
               <AddNewDropdown />
             </th>
@@ -239,7 +267,7 @@ export default function Biblios(props) {
       <Row><div className="d-flex justify-content-center">{ paginationTabs }</div></Row>
       <EditBiblioModal />
       <ScrapingModal />
-      <SearchNdlModal />
+      <SearchServiceModal />
     </Row>
   )
 }

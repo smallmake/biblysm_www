@@ -47,7 +47,7 @@ const AuthProvider = ({ children }: any) => {
     }
   }, []);
 
-  // 10分毎にuser authチェック
+  // 60分毎にuser authチェック
   useEffect(() => {
     let unmounted = false;
     const handle = setInterval(async () => {
@@ -55,7 +55,7 @@ const AuthProvider = ({ children }: any) => {
         const user = await initFirebaseAuth();
         authUser(user)  // user == null の場合の処理も含む
       }
-    }, 10 * 60 * 1000);
+    }, 60 * 60 * 1000);
     // clean up setInterval
     return () => {
       unmounted = true;

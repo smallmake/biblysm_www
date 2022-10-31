@@ -3,12 +3,32 @@ import { Row, Col, Image, Table, Button, Form, Badge, Modal } from 'react-bootst
 import { format } from "date-fns"
 import { ja } from "date-fns/locale"
 
+
 function BibliosList(props) {
+
+  const ReadlogLastAt = (props) => {
+    const lastDate = format(Date.parse(props.biblio.readlog_last_at), "MM/dd", {locale: ja,})
+    const lastHour = format(Date.parse(props.biblio.readlog_last_at), "HH:mm", {locale: ja,})
+    return (
+      <Row className="text-center">
+        <Col md={12}>{ lastDate }</Col>
+        <Col md={12}>{ lastHour } </Col>
+      </Row>
+    )
+  }
+
+
+
+
   return(
     !props.biblios ? <></> :
     props.biblios.map( (biblio) => 
       <tr key={biblio.uuid} className={props.readingBiblioIds.includes(biblio.id) ? "table-warning" : ""}>
-        <td><Image src={biblio.cover_image ? `${process.env.NEXT_PUBLIC_S3_BUCKET_URL}/${biblio.cover_image}` : '/images/no_image.png'}  width={60} /></td>
+        <td align='center'>
+          <div style={{width: '60px'}}>
+            <Image src={biblio.cover_image ? `${process.env.NEXT_PUBLIC_S3_BUCKET_URL}/${biblio.cover_image}` : '/images/no_image.png'}  height={80} style={{maxWidth: '100%'}} />
+          </div>
+        </td>
         <td onClick={ (e) => props.onPushBiblio(e)} data-biblio-id={biblio.id}>
           <ul className="list-unstyled">
             <li>{ biblio.title }</li>
@@ -16,8 +36,8 @@ function BibliosList(props) {
             <li className="text-muted small">{ biblio.memo }</li>
           </ul>
         </td>
-        <td nowrap="nowrap" className="align-middle">
-          <div className="mx-2">{ biblio.readlog_last_at ? format(Date.parse(biblio.readlog_last_at), "MM/dd HH:mm", {locale: ja,}) : <></> }</div>
+        <td className="align-middle">
+          <div className="mx-2">{ biblio.readlog_last_at ? <ReadlogLastAt biblio={biblio} /> : <></> }</div>
         </td>
         <td nowrap='nowrap' className="text-end">
             <div className="my-1">{ biblio.purchased_at }</div>

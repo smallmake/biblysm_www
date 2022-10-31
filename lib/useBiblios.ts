@@ -23,9 +23,14 @@ const { persistAtom } = recoilPersist({
 	storage: typeof window === "undefined" ? undefined : sessionStorage
 })
 
+// bibliotecaFilterParamsState は以下のようなフォーマット
+//  [
+//    {"id":1,"filter":{"page":1,"condition":"電","category":"","word":""}},
+//    {"id":2,"filter":{"page":1,"condition":"中断","category":"","word":""}}
+//  ]
 const bibliotecaFilterParamsState = atom<Object>({
   key: "bibliotecaFilterParamsState",
-  default: 1,
+  default: [],
   effects_UNSTABLE: [persistAtom] 
 })
 
@@ -39,11 +44,6 @@ export const useBiblios = (bibliotecaID) => {
   const [isFinished, setIsFinished] = useState(false)
   const [filterParams, setFilterParams] = useState<BibliosFilterParams>(null)
 
-  // bibliotecaFilterParamsState は以下のようなフォーマット
-  //  [
-  //    {"id":1,"filter":{"page":1,"condition":"電","category":"","word":""}},
-  //    {"id":2,"filter":{"page":1,"condition":"中断","category":"","word":""}}
-  //  ]
   const [bibliotecaFilterParams, setBibliotecaFilterParams] = useRecoilState(bibliotecaFilterParamsState)
 
   useEffect(() => {
@@ -92,17 +92,22 @@ export const useBiblios = (bibliotecaID) => {
     setFilterParams(filterParamsObj)
     const bibliotecaFilter = { id: bibliotecaID, filter: filterParamsObj }
     if (bibliotecaFilterParams) {
-      const inx = bibliotecaFilterParams.findIndex( obj => obj.id === bibliotecaID )
-      if (inx === -1) {
-        const _bibliotecaFilterParams = [...bibliotecaFilterParams]
-        _bibliotecaFilterParams.push(bibliotecaFilter)
-        setBibliotecaFilterParams(_bibliotecaFilterParams)
-      } else {
-        const _bibliotecaFilterParams = [...bibliotecaFilterParams]
-        _bibliotecaFilterParams[inx] = bibliotecaFilter
-        setBibliotecaFilterParams(_bibliotecaFilterParams)
+      let _bibliotecaFilterParams = []
+      if (Array.isArray(bibliotecaFilterParams)) { // 昔の残骸（配列でない）がある場合は除外し、後の処理で初期化
+        _bibliotecaFilterParams = [...bibliotecaFilterParams]
+        if (_bibliotecaFilterParams.length == 0) {
+          _bibliotecaFilterParams = [bibliotecaFilter]
+        } else {
+          const inx = bibliotecaFilterParams.findIndex( obj => obj.id === bibliotecaID )
+          if (inx === -1) {
+            _bibliotecaFilterParams.push(bibliotecaFilter)  // 追加
+          } else {
+            _bibliotecaFilterParams[inx] = bibliotecaFilter // inxで更新
+          }
+        }
       }
-    } else {
+      setBibliotecaFilterParams(_bibliotecaFilterParams)
+    } else { // まああり得ないが、あった場合
       setBibliotecaFilterParams([bibliotecaFilter])
     }
     setIsFinished(false)

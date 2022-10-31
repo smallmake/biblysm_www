@@ -3,7 +3,7 @@ import React from 'react'
 import { range } from 'lodash'
 import { Pagination } from 'react-bootstrap'
 
-const PADDING = 5
+const PADDING = 3 // 表示するページボタンの数
 
 const FirstPaginationItem = ({ onClick }) => (
   <Pagination.First onClick={() => onClick(1)} />
