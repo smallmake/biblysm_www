@@ -10,7 +10,7 @@ import ReadlogsList from "./ReadlogsList"
 export default function Readlogs(props) {
   const { readlogs, pagination, isFinished, setPage, reloadPage, deleteReadlog } = useReadlogs(props.bibliotecaID, props.biblioID)
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const [paginationTabs, setPaginationTabs] = useState([])
+  const [paginationTabs, setPaginationTabs] = useState(null)
   const [editReadlogID, setEditReadlogID] = useState(null)
   
   useEffect(() => {
