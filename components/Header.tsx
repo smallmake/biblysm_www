@@ -62,7 +62,7 @@ export default function Header() {
       <header className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between">
         
         <h1 className="d-flex align-items-center col-md-3 mb-2 mb-md-0 fs-5">
-          <Link href="/" className="text-decoration-none"><a>
+          <Link href={ "/" } className="text-decoration-none"><a>
             <Image src='images/biblysm-logo.svg' width={140} />
           </a></Link>
         </h1>
