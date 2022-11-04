@@ -6,15 +6,20 @@ import { ja } from "date-fns/locale"
 
 function BibliosList(props) {
 
-  const ReadlogLastAt = (props) => {
-    const lastDate = format(Date.parse(props.biblio.readlog_last_at), "MM/dd", {locale: ja,})
-    const lastHour = format(Date.parse(props.biblio.readlog_last_at), "HH:mm", {locale: ja,})
-    return (
-      <Row className="text-center">
-        <Col md={12}>{ lastDate }</Col>
-        <Col md={12}>{ lastHour } </Col>
-      </Row>
-    )
+  const ReadlogInfo = (props) => {
+    if (!props.biblio.readlog_last_at) {
+      return <></>
+    } else {
+      const lastDate = format(Date.parse(props.biblio.readlog_last_at), "MM/dd", {locale: ja,})
+      const lastHour = format(Date.parse(props.biblio.readlog_last_at), "HH:mm", {locale: ja,})
+      return (
+        <Row className="text-center">
+          <Col md={12}>{ lastDate }</Col>
+          <Col md={12}>{ lastHour } </Col>
+          { props.biblio.readlog_lapse ? <Col md={12}  className="my-0 small">[{ props.biblio.readlog_lapse }] </Col> : <></> }
+        </Row>
+      )
+    }
   }
 
 
@@ -37,7 +42,7 @@ function BibliosList(props) {
           </ul>
         </td>
         <td className="align-middle">
-          <div className="mx-2">{ biblio.readlog_last_at ? <ReadlogLastAt biblio={biblio} /> : <></> }</div>
+          <div className="mx-2"><ReadlogInfo biblio={biblio} /></div>
         </td>
         <td className="text-end" style={{whiteSpace: "nowrap"}}>
             <div className="my-1">{ biblio.purchased_at }</div>
