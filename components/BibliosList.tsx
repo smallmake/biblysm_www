@@ -34,7 +34,7 @@ function BibliosList(props) {
             <Image src={biblio.cover_image ? `${process.env.NEXT_PUBLIC_S3_BUCKET_URL}/${biblio.cover_image}` : '/images/no_image.png'}  height={80} style={{maxWidth: '100%'}} />
           </div>
         </td>
-        <td onClick={ (e) => props.onPushBiblio(e)} data-biblio-id={biblio.id}>
+        <td onClick={ (e) => props.onPushBiblio(e)} role="button" data-biblio-id={biblio.id}>
           <ul className="list-unstyled">
             <li>{ biblio.title }</li>
             <li className="text-muted">{ biblio.format ? biblio.format : "紙" }/{ biblio.category }</li>
