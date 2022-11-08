@@ -66,12 +66,9 @@ export const useBiblios = (bibliotecaID) => {
       const res = await fetcher('get', `bibliotecas/${bibliotecaID}/biblios`, token, params)
       //console.log(res)
       if (res && !unmounted) {
-        setBiblios(res[0])
-        setPagination(res[1])
-        setReadingBiblioIds(res[2])
-        // if (pagination && pagination.total_pages < filterParams.page) {
-        //   //setCurrentPage(pagination.total_pages)
-        // }
+        setBiblios(res.biblios)
+        setPagination(res.pagination)
+        setReadingBiblioIds(res.reading_biblio_ids)
         setIsFinished(true)
       }
       // 追加や削除があった場合に対応で毎回取得

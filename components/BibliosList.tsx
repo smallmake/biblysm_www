@@ -22,9 +22,6 @@ function BibliosList(props) {
     }
   }
 
-
-
-
   return(
     !props.biblios ? <></> :
     props.biblios.map( (biblio) => 
