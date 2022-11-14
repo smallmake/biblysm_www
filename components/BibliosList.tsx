@@ -34,7 +34,7 @@ function BibliosList(props) {
         <td onClick={ (e) => props.onPushBiblio(e)} role="button" data-biblio-id={biblio.id}>
           <ul className="list-unstyled">
             <li>{ biblio.title }</li>
-            <li className="text-muted">{ biblio.format ? biblio.format : "紙" }/{ biblio.category }</li>
+            <li className="text-muted">{ biblio.format }/{ biblio.category }</li>
             <li className="text-muted small">{ biblio.memo }</li>
           </ul>
         </td>
