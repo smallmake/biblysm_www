@@ -26,8 +26,8 @@ export const useReadlogs = (bibliotecaID, biblioID) => {
         res = await fetcher('get', `biblios/${biblioID}/readlogs?page=${currentPage}&`, token, null)
       }
       if (res && !unmounted) {
-        setReadlogs(res[0])
-        setPagination(res[1])
+        setReadlogs(res.readlogs)
+        setPagination(res.pagination)
         if (pagination && pagination.total_pages < currentPage) {
           setCurrentPage(pagination.total_pages)
         }
