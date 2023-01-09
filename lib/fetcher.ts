@@ -15,6 +15,7 @@ const fetcheTo =  async(server: string, method: string, url: string, token: stri
   const headers = new Headers();
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
+  headers.append('Access-Control-Allow-Origin', '*')
   if (token !== null) {
     headers.append('Authorization', `Bearer ${token}`)
   }
